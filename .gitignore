@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Elasticsearch data volume
+/volume/
+
 # Distribution / packaging
 .Python
 build/
