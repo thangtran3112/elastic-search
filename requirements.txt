@@ -1,4 +1,5 @@
 elasticsearch
+fastapi
 ipykernel
 tqdm
 sentence-transformers

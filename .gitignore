@@ -8,6 +8,8 @@ __pycache__/
 
 # Elasticsearch data volume
 /volume/
+/final_code/
+node_modules
 
 # Distribution / packaging
 .Python
