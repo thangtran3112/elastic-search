@@ -1,0 +1,154 @@
+{
+    "info": {
+        "_postman_id": "bd270708-8501-42c9-baab-17c83a07df07",
+        "name": "ElasticSearch",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "get_docs_per_year_count",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:8000/api/v1/get_docs_per_year_count?search_query=Andromeda&tokenizer=Standard",
+                    "query": [
+                        {
+                            "key": "search_query",
+                            "value": "Andromeda"
+                        },
+                        {
+                            "key": "tokenizer",
+                            "value": "Standard"
+                        }
+                    ],
+                    "variable": [],
+                    "path": [
+                        "api",
+                        "v1",
+                        "get_docs_per_year_count"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000"
+                }
+            }
+        },
+        {
+            "name": "regular_search",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:8000/api/v1/regular_search?search_query=Pluto&skip=0&limit=10&year=2015&tokenizer=Standard",
+                    "query": [
+                        {
+                            "key": "search_query",
+                            "value": "Pluto"
+                        },
+                        {
+                            "key": "skip",
+                            "value": "0"
+                        },
+                        {
+                            "key": "limit",
+                            "value": "10"
+                        },
+                        {
+                            "key": "year",
+                            "value": "2015"
+                        },
+                        {
+                            "key": "tokenizer",
+                            "value": "Standard"
+                        }
+                    ],
+                    "variable": [],
+                    "path": [
+                        "api",
+                        "v1",
+                        "regular_search"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000"
+                }
+            }
+        },
+        {
+            "name": "get_docs_per_year_count Ngram",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:8000/api/v1/get_docs_per_year_count?search_query=A&tokenizer=Ngram",
+                    "query": [
+                        {
+                            "key": "search_query",
+                            "value": "A"
+                        },
+                        {
+                            "key": "tokenizer",
+                            "value": "Ngram"
+                        }
+                    ],
+                    "variable": [],
+                    "path": [
+                        "api",
+                        "v1",
+                        "get_docs_per_year_count"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000"
+                }
+            }
+        },
+        {
+            "name": "regular_search Ngram",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:8000/api/v1/regular_search?search_query=P&skip=0&limit=10&year=2015&tokenizer=Ngram",
+                    "query": [
+                        {
+                            "key": "search_query",
+                            "value": "P"
+                        },
+                        {
+                            "key": "skip",
+                            "value": "0"
+                        },
+                        {
+                            "key": "limit",
+                            "value": "10"
+                        },
+                        {
+                            "key": "year",
+                            "value": "2015"
+                        },
+                        {
+                            "key": "tokenizer",
+                            "value": "Ngram"
+                        }
+                    ],
+                    "variable": [],
+                    "path": [
+                        "api",
+                        "v1",
+                        "regular_search"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000"
+                }
+            }
+        }
+    ]
+}
