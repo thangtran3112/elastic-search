@@ -2,3 +2,4 @@ elasticsearch
 ipykernel
 tqdm
 sentence-transformers
+matplotlib

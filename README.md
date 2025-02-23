@@ -1,5 +1,11 @@
 # ElasticSearch with Python
 
+## YouTube series
+
+In this YouTube series, we explain some concepts in details. Each video corresponds to specific notebooks. The notebooks have a prefix in this format `<video_number>_notebook_name`, for example `3_create_index` corresponds to the 3rd video in the series.
+
+[Watch the ElasticSearch Python tutorial series](https://www.youtube.com/watch?v=U3EUBGMVWZ4&list=PLMSb3cZXtIfpiHVLwXhaWk3KDXuklHdj5)
+
 ## [Installation ElasticSearch with Docker](https://www.elastic.co/search-labs/tutorials/install-elasticsearch/docker)
 
 * Install and start elastic search with `trial` license, we can switch to `basic` license later on
