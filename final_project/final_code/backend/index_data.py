@@ -1,32 +1,63 @@
 # Insert all document from ../data/apod.json to elastic search
 
 import json
-from pprint import pprint
-from typing import List
 
-from elasticsearch import Elasticsearch
 from tqdm import tqdm
-from config import INDEX_NAME_DEFAULT, INDEX_NAME_N_GRAM
+from typing import List
+from pprint import pprint
 from utils import get_es_client
+from elasticsearch import Elasticsearch
+from config import INDEX_NAME_DEFAULT, INDEX_NAME_N_GRAM
 
 
-def index_data(documents: List[dict]) -> None:
+def index_data(documents: List[dict], use_n_gram_tokenizer: bool) -> None:
     es = get_es_client(max_retries=5, sleep_time=5)
-    _ = _create_index(es=es)
-    _ = _insert_documents(es=es, documents=documents)
+    _ = _create_index(es=es, use_n_gram_tokenizer=use_n_gram_tokenizer)
+    _ = _insert_documents(
+        es=es, documents=documents, use_n_gram_tokenizer=use_n_gram_tokenizer
+    )
+
+    index_name = INDEX_NAME_N_GRAM if use_n_gram_tokenizer else INDEX_NAME_DEFAULT
     pprint(
-        f'Indexed {len(documents)} documents to Elasticsearch for index "{INDEX_NAME_DEFAULT}"'
+        f'Indexed {len(documents)} documents into Elasticsearch index "{index_name}"'
     )
 
 
-def _create_index(es: Elasticsearch) -> dict:
-    es.indices.delete(index=INDEX_NAME_DEFAULT, ignore_unavailable=True)
-    return es.indices.create(index=INDEX_NAME_DEFAULT)
+def _create_index(es: Elasticsearch, use_n_gram_tokenizer: bool) -> dict:
+    tokenizer = "n_gram_tokenizer" if use_n_gram_tokenizer else "standard"
+    index_name = INDEX_NAME_N_GRAM if use_n_gram_tokenizer else INDEX_NAME_DEFAULT
+
+    _ = es.indices.delete(index=index_name, ignore_unavailable=True)
+    return es.indices.create(
+        index=index_name,
+        body={
+            "settings": {
+                "analysis": {
+                    "analyzer": {
+                        "default": {
+                            "type": "custom",
+                            "tokenizer": tokenizer,
+                        },
+                    },
+                    "tokenizer": {
+                        "n_gram_tokenizer": {
+                            "type": "edge_ngram",
+                            "min_gram": 1,
+                            "max_gram": 30,
+                            "token_chars": ["letter", "digit"],
+                        },
+                    },
+                },
+            },
+        },
+    )
 
 
-def _insert_documents(es: Elasticsearch, documents: List[dict]) -> dict:
+def _insert_documents(
+    es: Elasticsearch, documents: List[dict], use_n_gram_tokenizer: bool
+) -> dict:
     operations = []
-    index_name = INDEX_NAME_DEFAULT
+    index_name = INDEX_NAME_N_GRAM if use_n_gram_tokenizer else INDEX_NAME_DEFAULT
     for document in tqdm(documents, total=len(documents), desc="Indexing documents"):
         operations.append({"index": {"_index": index_name}})
         operations.append(document)
@@ -37,4 +68,5 @@ if __name__ == "__main__":
     with open("../../../data/apod.json") as f:
         documents = json.load(f)
 
-    index_data(documents=documents)
+    index_data(documents=documents, use_n_gram_tokenizer=False)
+    index_data(documents=documents, use_n_gram_tokenizer=True)
