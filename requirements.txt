@@ -1,3 +1,4 @@
 elasticsearch
 ipykernel
 tqdm
+sentence-transformers
