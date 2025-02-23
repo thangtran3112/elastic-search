@@ -1,6 +1,6 @@
 {
     "info": {
-        "_postman_id": "bd270708-8501-42c9-baab-17c83a07df07",
+        "_postman_id": "f19924d7-5a0d-4c3b-bcb5-eaa60d18cda1",
         "name": "ElasticSearch",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
         "description": ""
@@ -141,6 +141,44 @@
                         "api",
                         "v1",
                         "regular_search"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000"
+                }
+            }
+        },
+        {
+            "name": "semantic_search",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "http://localhost:8000/api/v1/semantic_search?search_query=Pluto&skip=0&limit=2&year=2015",
+                    "query": [
+                        {
+                            "key": "search_query",
+                            "value": "Pluto"
+                        },
+                        {
+                            "key": "skip",
+                            "value": "0"
+                        },
+                        {
+                            "key": "limit",
+                            "value": "2"
+                        },
+                        {
+                            "key": "year",
+                            "value": "2015"
+                        }
+                    ],
+                    "variable": [],
+                    "path": [
+                        "api",
+                        "v1",
+                        "semantic_search"
                     ],
                     "protocol": "http",
                     "host": [

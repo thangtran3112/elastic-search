@@ -1,9 +1,13 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+import torch
 
-from config import INDEX_NAME_DEFAULT, INDEX_NAME_N_GRAM
+from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
+
+from sentence_transformers import SentenceTransformer
+
 from utils import get_es_client
+from config import INDEX_NAME_DEFAULT, INDEX_NAME_N_GRAM, INDEX_NAME_EMBEDDING
 
 app = FastAPI()
 
@@ -15,6 +19,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = SentenceTransformer("all-MiniLM-L6-v2").to(device)
 
 
 @app.get("/api/v1/regular_search/")
@@ -61,6 +67,67 @@ async def regular_search(
 
         response = es.search(
             index=index_name,
+            body={
+                "query": query,
+                "from": skip,
+                "size": limit,
+            },
+            filter_path=[
+                "hits.hits._source",
+                "hits.hits._score",
+                "hits.total",
+            ],
+        )
+
+        total_hits = get_total_hits(response)
+        max_pages = calculate_max_pages(total_hits, limit)
+
+        return {
+            "hits": response["hits"].get("hits", []),
+            "max_pages": max_pages,
+        }
+    except Exception as e:
+        return handle_error(e)
+
+
+@app.get("/api/v1/semantic_search/")
+async def semantic_search(
+    search_query: str, skip: int = 0, limit: int = 10, year: str | None = None
+) -> dict:
+    try:
+        es = get_es_client(max_retries=1, sleep_time=0)
+        embedded_query = model.encode(search_query)
+
+        query = {
+            "bool": {
+                "must": [
+                    {
+                        "knn": {
+                            "field": "embedding",
+                            "query_vector": embedded_query,
+                            # Because we have 3333 documents, we can return them all.
+                            "k": 1e4,  # adjust this value for more or less decisiveness
+                        }
+                    }
+                ]
+            }
+        }
+
+        if year:
+            query["bool"]["filter"] = [
+                {
+                    "range": {
+                        "date": {
+                            "gte": f"{year}-01-01",
+                            "lte": f"{year}-12-31",
+                            "format": "yyyy-MM-dd",
+                        }
+                    }
+                }
+            ]
+
+        response = es.search(
+            index=INDEX_NAME_EMBEDDING,
             body={
                 "query": query,
                 "from": skip,
