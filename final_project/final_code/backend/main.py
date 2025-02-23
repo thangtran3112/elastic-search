@@ -41,6 +41,20 @@ async def search(
                 ]
             }
         }
+
+        if year:
+            query["bool"]["filter"] = [
+                {
+                    "range": {
+                        "date": {
+                            "gte": f"{year}-01-01",
+                            "lte": f"{year}-12-31",
+                            "format": "yyyy-MM-dd",
+                        }
+                    }
+                }
+            ]
+
         response = es.search(
             index=INDEX_NAME_DEFAULT,
             body={
@@ -54,8 +68,13 @@ async def search(
                 "hits.total",
             ],
         )
+
+        total_hits = get_total_hits(response)
+        max_pages = calculate_max_pages(total_hits, limit)
+
         return {
-            "hits": response["hits"]["hits"],
+            "hits": response["hits"].get("hits", []),
+            "max_pages": max_pages,
         }
     except Exception as e:
         return handle_error(e)
@@ -112,3 +131,11 @@ def extract_docs_per_year(response: dict) -> dict:
 def handle_error(e: Exception) -> HTMLResponse:
     error_message = f"An error occurred: {str(e)}"
     return HTMLResponse(content=error_message, status_code=500)
+
+
+def get_total_hits(response: dict) -> int:
+    return response["hits"]["total"]["value"]
+
+
+def calculate_max_pages(total_hits: int, limit: int) -> int:
+    return (total_hits + limit - 1) // limit
