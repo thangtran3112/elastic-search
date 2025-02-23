@@ -65,3 +65,23 @@ In this YouTube series, we explain some concepts in details. Each video correspo
 ```zsh
   pip install -r requirements.txt
 ```
+
+* Accessing ElasticSearch inside container
+
+```zsh
+  sudo docker start elasticsearch
+  sudo docker exec -u 0 -it elasticsearch bash
+```
+
+After logging into the elasticsearch container, we can change the heap size, by creating `heap.option` file inside `jvm.options.d` folder:
+
+For instance, using `-Xms2g` for `2GB of RAM`:
+
+```bash
+echo "-Xms2g" > /usr/share/elasticsearch/config/jvm.options.d/heap.options
+echo "-Xmx2g" >> /usr/share/elasticsearch/config/jvm.options.d/heap.options
+
+# Checking and restart
+cat /usr/share/elasticsearch/config/jvm.options.d/heap.options
+sudo docker restart elasticsearch
+```
