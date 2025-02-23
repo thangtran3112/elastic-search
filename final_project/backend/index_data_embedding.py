@@ -49,7 +49,7 @@ def _insert_documents(
 
 
 if __name__ == "__main__":
-    with open("../../../data/apod.json") as f:
+    with open("../../data/apod.json") as f:
         documents = json.load(f)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

@@ -1,5 +1,9 @@
 # FastAPI backend
 
+## Data Scraper
+
+* Scraped from [Nasa website](https://apod.nasa.gov/apod/archivepix.html) using BeautifulSoup
+
 ## Preparing the index
 
 ```zsh
